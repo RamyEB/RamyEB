@@ -1,4 +1,4 @@
-### Hi there 👋
+module.exports = `### Hi there 👋
 
 I'm Ramy, currently Software Engineer at Ledger.
 
@@ -29,4 +29,5 @@ I'm Ramy, currently Software Engineer at Ledger.
 
 ![Figma](https://img.shields.io/badge/figma-%23F24E1E.svg?style=for-the-badge&logo=figma&logoColor=white)
 
-Last update on Mon Jul 24 2023
+Last update on <#today_date>
+`;
