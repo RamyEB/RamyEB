@@ -29,4 +29,4 @@ I'm Ramy, currently Software Engineer at Ledger.
 
 ![Figma](https://img.shields.io/badge/figma-%23F24E1E.svg?style=for-the-badge&logo=figma&logoColor=white)
 
-Last update on Thu Nov 02 2023
+Last update on Fri Nov 03 2023
