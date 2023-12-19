@@ -19,14 +19,6 @@ jobs:
           git config --global user.name 'RamyEB'
           git config --global user.email 'ramyelb@gmail.com'
 
-      - name: Get list of changed files
-        id: getfiles
-        run: |
-          CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} 'test/test.js')
-          if [ -n "$CHANGED_FILES" ]; then
-            echo "CHANGED_FILES=$CHANGED_FILES" >> $GITHUB_ENV
-          fi
-
       - name: Sync files to the other repository
         env:
           TARGET_REPO_TOKEN: ${{ secrets.TARGET_REPO_TOKEN }}
@@ -36,12 +28,7 @@ jobs:
           cd RamyEBTest
           git checkout -b $BRANCH_NAME
 
-          while read file; do
-            mkdir -p $(dirname "$file")
-            cp "../$file" "$file"
-          done < $GITHUB_ENV
-
-          git add .
+          git add test/test.js
           git commit -m "Update specific changes"
           git push origin $BRANCH_NAME
 
