@@ -1,0 +1,53 @@
+name: Create Pull Request to Another Repository
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'test/test.js'
+
+jobs:
+  syncAndCreatePR:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+    - name: Set up Git
+      run: |
+        git config --global user.name 'RamyEB'
+        git config --global user.email 'ramyelb@gmail.com'
+
+    - name: Get list of changed files
+        id: getfiles
+        run: |
+          echo "changed_files<<EOF" >> $GITHUB_ENV
+          git diff --name-only ${{ github.event.before }} ${{ github.sha }} 'test/test.js' >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+    - name: Sync files to the other repository
+      env:
+          TARGET_REPO_TOKEN: ${{ secrets.TARGET_REPO_TOKEN }}
+        run: |
+          git clone https://x-access-token:${TARGET_REPO_TOKEN}@github.com/RamyEB/RamyEBTest
+          cd RamyEBTest
+          git checkout -b sync-discover-branch-$(date +%s)
+          
+          while read file; do
+            mkdir -p $(dirname "$file")
+            cp "../$file" "$file"
+          done < $GITHUB_ENV
+
+          git add .
+          git commit -m "Update specific changes"
+          git push origin sync-discover-branch-$(date +%s)
+
+    - name: Create Pull Request
+        env:
+          TARGET_REPO_TOKEN: ${{ secrets.TARGET_REPO_TOKEN }}
+        run: |
+          curl -X POST -H "Authorization: token ${TARGET_REPO_TOKEN}" \
+               -d '{"title":"Update specific changes","head":"sync-discover-branch-$(date +%s)","base":"main"}' \
+               https://api.github.com/repos/RamyEB/RamyEBTest/pulls
