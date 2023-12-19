@@ -19,7 +19,7 @@ jobs:
           git config --global user.name 'RamyEB'
           git config --global user.email 'ramyelb@gmail.com'
 
-      - name: Sync files to the other repository
+      - name: Sync files to the other repository and create Pull Request
         env:
           TARGET_REPO_TOKEN: ${{ secrets.TARGET_REPO_TOKEN }}
         run: |
@@ -35,13 +35,6 @@ jobs:
 
           git add test/test.js
           git commit -m "Update specific changes"
-          git push origin $BRANCH_NAME
-
-      - name: Create Pull Request
-        env:
-          TARGET_REPO_TOKEN: ${{ secrets.TARGET_REPO_TOKEN }}
-        run: |
-          BRANCH_NAME=sync-discover-branch-$(date +%s)
           git push origin $BRANCH_NAME
           RESPONSE=$(curl -X POST -H "Authorization: token ${TARGET_REPO_TOKEN}" \
               -d '{"title":"Update specific changes","head":"'"$BRANCH_NAME"'","base":"main"}' \
