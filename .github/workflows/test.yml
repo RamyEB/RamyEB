@@ -22,9 +22,10 @@ jobs:
       - name: Get list of changed files
         id: getfiles
         run: |
-          echo "changed_files<<EOF" >> $GITHUB_ENV
-          git diff --name-only ${{ github.event.before }} ${{ github.sha }} 'test/test.js' >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
+        CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} 'test/test.js')
+        if [ -n "$CHANGED_FILES" ]; then
+          echo "CHANGED_FILES=$CHANGED_FILES" >> $GITHUB_ENV
+        fi
 
       - name: Sync files to the other repository
         env:
