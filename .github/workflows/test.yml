@@ -24,9 +24,14 @@ jobs:
           TARGET_REPO_TOKEN: ${{ secrets.TARGET_REPO_TOKEN }}
         run: |
           BRANCH_NAME=sync-discover-branch-$(date +%s)
+          git clone https://x-access-token:${TARGET_REPO_TOKEN}@github.com/RamyEB/RamyEB
           git clone https://x-access-token:${TARGET_REPO_TOKEN}@github.com/RamyEB/RamyEBTest
           cd RamyEBTest
           git checkout -b $BRANCH_NAME
+          cd ..
+          rm -rf RamyEBTest/test/test.js
+          mv RamyEB/test/test.js RamyEBTest/test/test.js
+          cd RamyEBTest
 
           git add test/test.js
           git commit -m "Update specific changes"
