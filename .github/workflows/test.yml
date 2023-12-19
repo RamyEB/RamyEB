@@ -42,15 +42,8 @@ jobs:
           TARGET_REPO_TOKEN: ${{ secrets.TARGET_REPO_TOKEN }}
         run: |
           BRANCH_NAME=sync-discover-branch-$(date +%s)
-          curl -X POST -H "Authorization: token ${TARGET_REPO_TOKEN}" \
-               -d '{"title":"Update specific changes","head":"'"$BRANCH_NAME"'","base":"main"}' \
-               https://api.github.com/repos/RamyEB/RamyEBTest/pulls
-      - name: Create Pull Request
-        env:
-          TARGET_REPO_TOKEN: ${{ secrets.TARGET_REPO_TOKEN }}
-        run: |
-          BRANCH_NAME=sync-discover-branch-$(date +%s)
           git push origin $BRANCH_NAME
-          curl -X POST -H "Authorization: token ${TARGET_REPO_TOKEN}" \
-            -d '{"title":"Update specific changes","head":"'"$BRANCH_NAME"'","base":"main"}' \
-            https://api.github.com/repos/RamyEB/RamyEBTest/pulls
+          RESPONSE=$(curl -X POST -H "Authorization: token ${TARGET_REPO_TOKEN}" \
+              -d '{"title":"Update specific changes","head":"'"$BRANCH_NAME"'","base":"main"}' \
+              https://api.github.com/repos/RamyEB/RamyEBTest/pulls)
+          echo "GitHub API Response: $RESPONSE"
