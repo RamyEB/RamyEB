@@ -15,19 +15,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-    - name: Set up Git
+      - name: Set up Git
       run: |
         git config --global user.name 'RamyEB'
         git config --global user.email 'ramyelb@gmail.com'
 
-    - name: Get list of changed files
+      - name: Get list of changed files
         id: getfiles
         run: |
           echo "changed_files<<EOF" >> $GITHUB_ENV
           git diff --name-only ${{ github.event.before }} ${{ github.sha }} 'test/test.js' >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
 
-    - name: Sync files to the other repository
+      - name: Sync files to the other repository
       env:
           TARGET_REPO_TOKEN: ${{ secrets.TARGET_REPO_TOKEN }}
         run: |
@@ -44,7 +44,7 @@ jobs:
           git commit -m "Update specific changes"
           git push origin sync-discover-branch-$(date +%s)
 
-    - name: Create Pull Request
+      - name: Create Pull Request
         env:
           TARGET_REPO_TOKEN: ${{ secrets.TARGET_REPO_TOKEN }}
         run: |
