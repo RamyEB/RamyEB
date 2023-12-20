@@ -23,20 +23,29 @@ jobs:
         env:
           TARGET_REPO_TOKEN: ${{ secrets.TARGET_REPO_TOKEN }}
         run: |
-          BRANCH_NAME=sync-discover-branch-$(date +%s)
-          git clone https://x-access-token:${TARGET_REPO_TOKEN}@github.com/RamyEB/RamyEB
-          git clone https://x-access-token:${TARGET_REPO_TOKEN}@github.com/RamyEB/RamyEBTest
+          BRANCH_NAME=sync-discover-doc-$(date +%s)
+          SOURCE_REPO="github.com/RamyEB/RamyEB"
+          FILE_PATH_SOURCE_REPO="test/test.js"
+          TARGET_REPO="github.com/RamyEB/RamyEBTest"
+          FILE_PATH_TARGET_REPO="test/test.js"
+          PR_API_URL="https://api.github.com/repos/RamyEB/RamyEBTest/pulls"
+          COMMIT_MESSAGE="doc: add new changes from wallet-api doc"
+
+          git clone --depth 1 https://${TARGET_REPO_TOKEN}@${SOURCE_REPO}
+          git clone --depth 1 https://${TARGET_REPO_TOKEN}@${TARGET_REPO}
+
+          # Copy file and check if there are changes
+          cp -u RamyEB/${FILE_PATH_SOURCE_REPO} RamyEBTest/${FILE_PATH_TARGET_REPO}
+
+          # Create new branch and push changes
           cd RamyEBTest
           git checkout -b $BRANCH_NAME
-          cd ..
-          rm -rf RamyEBTest/test/test.js
-          mv RamyEB/test/test.js RamyEBTest/test/test.js
-          cd RamyEBTest
-
-          git add test/test.js
-          git commit -m "Update specific changes"
+          git add $FILE_PATH_TARGET_REPO
+          git commit -m "${COMMIT_MESSAGE}"
           git push origin $BRANCH_NAME
+
+          # Create Pull Request
           RESPONSE=$(curl -X POST -H "Authorization: token ${TARGET_REPO_TOKEN}" \
-              -d '{"title":"Update specific changes","head":"'"$BRANCH_NAME"'","base":"main"}' \
-              https://api.github.com/repos/RamyEB/RamyEBTest/pulls)
+              -d '{"title":"Merging documentation from wallet-api","head":"'"$BRANCH_NAME"'","base":"main"}' \
+              ${PR_API_URL})
           echo "GitHub API Response: $RESPONSE"
