@@ -38,8 +38,9 @@ jobs:
           cd RamyEBTest
           git checkout -b $BRANCH_NAME
 
-          # Copy file and check if there are changes
-          cp -u ../RamyEB/${FILE_PATH_SOURCE_REPO} ${FILE_PATH_TARGET_REPO}
+          # Move files
+          rm -rf  ${FILE_PATH_TARGET_REPO}
+          mv ../RamyEB/${FILE_PATH_SOURCE_REPO} ${FILE_PATH_TARGET_REPO}
 
           # Create new branch and push changes
           git add $FILE_PATH_TARGET_REPO
