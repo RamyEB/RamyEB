@@ -22,7 +22,6 @@ jobs:
       - name: Sync files to the other repository and create Pull Request
         env:
           TARGET_REPO_TOKEN: ${{ secrets.TARGET_REPO_TOKEN }}
-          COMMIT_MESSAGE: "Update specific changes"
           FILE_PATH_SOURCE_REPO: "test/test.js"
           FILE_PATH_TARGET_REPO: "test/test.js"
           SOURCE_REPO: "github.com/RamyEB/RamyEB"
