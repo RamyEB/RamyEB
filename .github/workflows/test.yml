@@ -22,24 +22,27 @@ jobs:
       - name: Sync files to the other repository and create Pull Request
         env:
           TARGET_REPO_TOKEN: ${{ secrets.TARGET_REPO_TOKEN }}
+          COMMIT_MESSAGE: "Update specific changes"
+          FILE_PATH_SOURCE_REPO: "test/test.js"
+          FILE_PATH_TARGET_REPO: "test/test.js"
+          SOURCE_REPO: "github.com/RamyEB/RamyEB"
+          TARGET_REPO: "github.com/RamyEB/RamyEBTest"
+          PR_API_URL: "https://api.github.com/repos/RamyEB/RamyEBTest/pulls"
+          COMMIT_MESSAGE: "doc: add new changes from wallet-api doc"
+          BRANCH_NAME: sync-discover-doc-$(date +%s)
         run: |
           BRANCH_NAME=sync-discover-doc-$(date +%s)
-          SOURCE_REPO="github.com/RamyEB/RamyEB"
-          FILE_PATH_SOURCE_REPO="test/test.js"
-          TARGET_REPO="github.com/RamyEB/RamyEBTest"
-          FILE_PATH_TARGET_REPO="test/test.js"
-          PR_API_URL="https://api.github.com/repos/RamyEB/RamyEBTest/pulls"
-          COMMIT_MESSAGE="doc: add new changes from wallet-api doc"
 
           git clone --depth 1 https://${TARGET_REPO_TOKEN}@${SOURCE_REPO}
           git clone --depth 1 https://${TARGET_REPO_TOKEN}@${TARGET_REPO}
 
-          # Copy file and check if there are changes
-          cp -u RamyEB/${FILE_PATH_SOURCE_REPO} RamyEBTest/${FILE_PATH_TARGET_REPO}
-
-          # Create new branch and push changes
           cd RamyEBTest
           git checkout -b $BRANCH_NAME
+
+          # Copy file and check if there are changes
+          cp -u ../RamyEB/${FILE_PATH_SOURCE_REPO} ${FILE_PATH_TARGET_REPO}
+
+          # Create new branch and push changes
           git add $FILE_PATH_TARGET_REPO
           git commit -m "${COMMIT_MESSAGE}"
           git push origin $BRANCH_NAME
